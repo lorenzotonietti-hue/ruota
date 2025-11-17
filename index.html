@@ -227,10 +227,16 @@
     <div id="pointer"></div>
     <div id="wheelContainer">
   <svg id="wheelSVG" width="350" height="350" viewBox="0 0 350 350">
-    <g id="wheelGroup" transform="rotate(0 175 175)">
-    </g>
+    
+    <!-- spicchi che ruotano -->
+    <g id="wheelSlices" transform="rotate(0 175 175)"></g>
+
+    <!-- testo che NON ruota -->
+    <g id="wheelLabels"></g>
+
   </svg>
 </div>
+
 
 
     <div class="small" style="margin-top:10px;color:#ffe;">
@@ -323,8 +329,11 @@ function renderUsedLetters() {
 ===================== */
 
 function initWheel() {
-  const wheelGroup = document.getElementById("wheelGroup");
-  wheelGroup.innerHTML = "";
+  const slicesGroup = document.getElementById("wheelSlices");
+  const labelsGroup = document.getElementById("wheelLabels");
+
+  slicesGroup.innerHTML = "";
+  labelsGroup.innerHTML = "";
 
   const values = wheelValues;
   const sliceAngle = 360 / values.length;
@@ -336,41 +345,39 @@ function initWheel() {
 
     const x1 = 175 + radius * Math.cos(startAngle);
     const y1 = 175 + radius * Math.sin(startAngle);
-
     const x2 = 175 + radius * Math.cos(endAngle);
     const y2 = 175 + radius * Math.sin(endAngle);
 
     const largeArc = sliceAngle > 180 ? 1 : 0;
 
-    // colore alternato
+    // colori alternati
     const color = i % 2 === 0 ? "#FFE98A" : "#F99A9A";
 
-    // Disegna lo spicchio
-    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    path.setAttribute(
+    // 🌈 spicchio (ruota!)
+    const slice = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    slice.setAttribute(
       "d",
       `M175,175 L${x1},${y1} A${radius},${radius} 0 ${largeArc} 1 ${x2},${y2} Z`
     );
-    path.setAttribute("fill", color);
-    path.setAttribute("stroke", "#ecc54c");
-    path.setAttribute("stroke-width", "2");
-    wheelGroup.appendChild(path);
+    slice.setAttribute("fill", color);
+    slice.setAttribute("stroke", "#e2c373");
+    slice.setAttribute("stroke-width", "2");
 
-    // Posizione testo al centro dello spicchio
+    slicesGroup.appendChild(slice);
+
+    // posizione testo
     const midAngle = (startAngle + endAngle) / 2;
-    const textX = 175 + (radius * 0.55) * Math.cos(midAngle);
-    const textY = 175 + (radius * 0.55) * Math.sin(midAngle);
+    const labelX = 175 + (radius * 0.55) * Math.cos(midAngle);
+    const labelY = 175 + (radius * 0.55) * Math.sin(midAngle);
 
-    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    // ✨ testo che NON ruota
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", labelX);
+    label.setAttribute("y", labelY);
+    label.setAttribute("class", "sliceText");
+    label.textContent = typeof val === "number" ? val + " pt" : val;
 
-    text.setAttribute("x", textX);
-    text.setAttribute("y", textY);
-    
-    // TESTO DRITTO!
-    text.setAttribute("class", "sliceText");
-
-    text.textContent = typeof val === "number" ? val + " pt" : val;
-    wheelGroup.appendChild(text);
+    labelsGroup.appendChild(label);
   });
 }
 
@@ -587,10 +594,10 @@ giveUpBtn.addEventListener("click", () => {
 spinBtn.addEventListener("click", () => {
   const extraRotation = 360 * 4 + Math.floor(Math.random() * 360);
   currentRotation += extraRotation;
-  document.getElementById("wheelGroup").setAttribute(
-  "transform",
-  `rotate(${currentRotation} 175 175)`
-);
+  document
+  .getElementById("wheelSlices")
+  .setAttribute("transform", `rotate(${currentRotation} 175 175)`);
+
 
   spinBtn.disabled = true;
   setMessage("La ruota gira...");
@@ -649,6 +656,7 @@ initGame();
 </script>
 </body>
 </html>
+
 
 
 
