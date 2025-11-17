@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Ruota della Fortuna - Informatica</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    #topicTitle {
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #2563eb;
+      text-transform: uppercase;
+    }
+
+    .game-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .left-panel, .right-panel {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      min-width: 280px;
+    }
+
+    .left-panel {
+      flex: 1.2;
+    }
+
+    .right-panel {
+      flex: 0.8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #hiddenPhrase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      font-size: 24px;
+      justify-content: center;
+    }
+
+    .letter-box {
+      width: 28px;
+      height: 34px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 2px solid #111827;
+      text-transform: uppercase;
+    }
+
+    .letter-box.space {
+      border-bottom: none;
+      width: 12px;
+    }
+
+    .letter-box.revealed {
+      font-weight: bold;
+      color: #111827;
+    }
+
+    #scoreBox {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #usedLetters {
+      font-size: 14px;
+      color: #4b5563;
+      margin-bottom: 10px;
+    }
+
+    #message {
+      margin-top: 10px;
+      min-height: 24px;
+      color: #111827;
+      font-weight: bold;
+    }
+
+    /* Ruota */
+    #wheelContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #wheel {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 6px solid #111827;
+      position: relative;
+      overflow: hidden;
+      transform: rotate(0deg);
+      transition: transform 3s ease-out;
+      margin-bottom: 12px;
+    }
+
+    .slice {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 12px;
+      text-align: center;
+      color: #111827;
+      font-weight: bold;
+      padding: 2px;
+    }
+
+    /* Colori alternati per gli spicchi */
+    .slice:nth-child(odd) {
+      background: #bfdbfe;
+    }
+    .slice:nth-child(even) {
+      background: #f9a8d4;
+    }
+
+    #pointer {
+      width: 0;
+      height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-bottom: 24px solid #ef4444;
+      margin-bottom: -6px;
+      z-index: 10;
+    }
+
+    button {
+      padding: 8px 14px;
+      margin: 5px 3px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      background: #2563eb;
+      color: white;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    input[type="text"] {
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #d1d5db;
+      margin-right: 5px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    @media (max-width: 800px) {
+      .game-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>La Ruota della
