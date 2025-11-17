@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>La Ruota della Fortuna - Informatica</title>
+  <title>La Ruota della Fortuna - Deluxe Edition</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f3f4f6;
+      background: linear-gradient(135deg,#6ea1ff,#b389ff);
       margin: 0;
       padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      color: #fff;
     }
 
     h1 {
       margin-bottom: 5px;
+      text-shadow: 2px 2px 4px #000;
+      font-size: 42px;
     }
 
     #topicTitle {
       font-weight: bold;
       margin-bottom: 15px;
-      color: #2563eb;
+      color: #ffe772;
+      text-shadow: 1px 1px 3px #000;
+      font-size: 22px;
       text-transform: uppercase;
     }
 
@@ -36,11 +41,13 @@
     }
 
     .left-panel, .right-panel {
-      background: #ffffff;
+      background: rgba(0,0,0,0.35);
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      min-width: 280px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      min-width: 320px;
+      color: #fff;
+      backdrop-filter: blur(5px);
     }
 
     .left-panel {
@@ -57,68 +64,73 @@
     #hiddenPhrase {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
+      gap: 8px;
       margin-top: 10px;
       margin-bottom: 15px;
-      font-size: 24px;
+      font-size: 30px;
       justify-content: center;
     }
 
     .letter-box {
-      width: 28px;
-      height: 34px;
+      width: 34px;
+      height: 42px;
       display: flex;
       justify-content: center;
       align-items: center;
-      border-bottom: 2px solid #111827;
+      border-bottom: 3px solid #ffe772;
       text-transform: uppercase;
+      color: #ffe;
+      text-shadow: 2px 2px 3px #000;
+      font-weight: bold;
     }
 
     .letter-box.space {
       border-bottom: none;
-      width: 12px;
+      width: 16px;
     }
 
     .letter-box.revealed {
-      font-weight: bold;
-      color: #111827;
+      animation: pop 0.25s ease-out;
+      color: #fff;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     #scoreBox {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: #ffe772;
+      text-shadow: 1px 1px 3px #000;
     }
 
     #usedLetters {
-      font-size: 14px;
-      color: #4b5563;
+      font-size: 15px;
+      color: #ddd;
       margin-bottom: 10px;
     }
 
     #message {
       margin-top: 10px;
-      min-height: 24px;
-      color: #111827;
+      min-height: 28px;
+      color: #ffe772;
       font-weight: bold;
     }
 
-    /* Ruota */
-    #wheelContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
     #wheel {
-      width: 260px;
-      height: 260px;
+      width: 300px;
+      height: 300px;
       border-radius: 50%;
-      border: 6px solid #111827;
+      border: 8px solid #ffe772;
       position: relative;
       overflow: hidden;
       transform: rotate(0deg);
-      transition: transform 3s ease-out;
+      transition: transform 4s cubic-bezier(.17,.67,.12,1.27);
       margin-bottom: 12px;
+      box-shadow: 0 0 20px #000;
+      background: radial-gradient(circle at center, #fff 0, #fee2e2 40%, #fecaca 70%);
     }
 
     .slice {
@@ -131,66 +143,427 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 12px;
+      font-size: 16px;
       text-align: center;
-      color: #111827;
+      color: #000;
       font-weight: bold;
       padding: 2px;
     }
 
-    /* Colori alternati per gli spicchi */
     .slice:nth-child(odd) {
-      background: #bfdbfe;
+      background: #fef08a;
     }
     .slice:nth-child(even) {
-      background: #f9a8d4;
+      background: #fca5a5;
     }
 
     #pointer {
       width: 0;
       height: 0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-bottom: 24px solid #ef4444;
-      margin-bottom: -6px;
-      z-index: 10;
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-bottom: 30px solid #ff2f2f;
+      margin-bottom: -10px;
+      filter: drop-shadow(0 0 5px #000);
     }
 
     button {
-      padding: 8px 14px;
-      margin: 5px 3px;
+      padding: 10px 18px;
+      margin: 7px 4px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
-      background: #2563eb;
-      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      background: #38bdf8;
+      color: #000;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #7dd3fc;
+      transform: scale(1.05);
     }
 
     button:disabled {
-      background: #9ca3af;
+      background: #6b7280;
       cursor: not-allowed;
+      transform: none;
     }
 
     input[type="text"] {
       padding: 6px;
-      border-radius: 4px;
-      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      border: none;
       margin-right: 5px;
     }
 
     .small {
       font-size: 13px;
-      color: #6b7280;
+      color: #fefce8;
     }
 
-    @media (max-width: 800px) {
-      .game-container {
-        flex-direction: column;
-        align-items: stretch;
-      }
+    audio { display:none; }
+
+    @media (max-width: 900px) {
+      h1 { font-size: 32px; }
+      #hiddenPhrase { font-size: 24px; }
     }
   </style>
 </head>
 <body>
-  <h1>La Ruota della
+  <h1>La Ruota della Fortuna</h1>
+  <div id="topicTitle"></div>
+
+  <!-- Suoni (presi da librerie gratuite tipo Pixabay) -->
+  <audio id="spinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_147b34d30d.mp3?filename=wheel-spin-102938.mp3"></audio>
+  <audio id="dingSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b56a0d5a5.mp3?filename=ding-36029.mp3"></audio>
+  <audio id="failSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_f3abc3f435.mp3?filename=error-126627.mp3"></audio>
+
+  <div class="game-container">
+    <div class="left-panel">
+      <div id="scoreBox">Punteggio: <span id="score">0</span> punti</div>
+      <div id="usedLetters">Lettere usate: <span id="usedList">-</span></div>
+
+      <div id="hiddenPhrase"></div>
+
+      <div>
+        <button id="spinBtn">🎡 Gira la ruota</button>
+        <button id="buyVowelBtn">🅰 Compra vocale (-200)</button>
+        <input type="text" id="vowelInput" maxlength="1" placeholder="Vocale" />
+      </div>
+
+      <div style="margin-top: 10px;">
+        <input type="text" id="solveInput" placeholder="Prova a risolvere la frase" size="35" />
+        <button id="solveBtn">✔ Risolvi</button>
+      </div>
+
+      <div id="message"></div>
+    </div>
+
+    <div class="right-panel">
+      <div id="pointer"></div>
+      <div id="wheel"></div>
+      <div class="small" style="margin-top:10px;">
+        Gira la ruota, scegli una consonante, compra vocali e prova a risolvere la frase!
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- DATI ----------
+    const rounds = [
+      { topic: "Informatica", phrase: "IL DATABASE MEMORIZZA I DATI" },
+      { topic: "Programmazione", phrase: "UN ALGORITMO RISOLVE UN PROBLEMA" },
+      { topic: "Reti", phrase: "INTERNET COLLEGA MILIONI DI COMPUTER" },
+      { topic: "Sicurezza", phrase: "LA PASSWORD NON VA CONDIVISA" },
+      { topic: "Economia Aziendale", phrase: "IL BILANCIO DI ESERCIZIO MOSTRA LA SITUAZIONE" },
+      { topic: "Informatica Aziendale", phrase: "IL GESTIONALE ORGANIZZA I PROCESSI AZIENDALI" },
+      { topic: "SISTEMI INFORMATIVI AZIENDALI", phrase: "IL SISTEMA INFORMATIVO SUPPORTA LE DECISIONI" },
+      { topic: "Diritto", phrase: "LA COSTITUZIONE TUTELA I DIRITTI FONDAMENTALI" },
+      { topic: "TCP IP", phrase: "IL PROTOCOLLO TCP GARANTISCE LA CONSEGNA DEI PACCHETTI" },
+      { topic: "HTML CSS", phrase: "IL LINGUAGGIO HTML DEFINISCE LA STRUTTURA DELLA PAGINA" }
+    ];
+
+    const wheelValues = [100, 150, 200, 250, 300, 400, 500, "PERDI TUTTO", "PASSA"];
+    const vowels = ["A", "E", "I", "O", "U"];
+
+    // ---------- STATO ----------
+    let currentRound;
+    let revealedLetters = [];
+    let usedLetters = [];
+    let score = 0;
+    let currentRotation = 0;
+    let currentSpinValue = null;
+
+    // ---------- DOM ----------
+    const topicTitleEl = document.getElementById("topicTitle");
+    const hiddenPhraseEl = document.getElementById("hiddenPhrase");
+    const scoreEl = document.getElementById("score");
+    const usedListEl = document.getElementById("usedList");
+    const messageEl = document.getElementById("message");
+    const wheelEl = document.getElementById("wheel");
+    const spinBtn = document.getElementById("spinBtn");
+    const buyVowelBtn = document.getElementById("buyVowelBtn");
+    const vowelInput = document.getElementById("vowelInput");
+    const solveInput = document.getElementById("solveInput");
+    const solveBtn = document.getElementById("solveBtn");
+
+    const spinSound = document.getElementById("spinSound");
+    const dingSound = document.getElementById("dingSound");
+    const failSound = document.getElementById("failSound");
+
+    function playSound(el) {
+      if (!el) return;
+      el.currentTime = 0;
+      el.play().catch(() => {});
+    }
+
+    // ---------- FUNZIONI ----------
+    function pickRandomRound() {
+      const index = Math.floor(Math.random() * rounds.length);
+      currentRound = rounds[index];
+    }
+
+    function initPhrase() {
+      const phrase = currentRound.phrase.toUpperCase();
+      revealedLetters = [];
+      hiddenPhraseEl.innerHTML = "";
+
+      for (let i = 0; i < phrase.length; i++) {
+        const ch = phrase[i];
+        const span = document.createElement("span");
+        if (ch === " ") {
+          span.className = "letter-box space";
+          span.textContent = " ";
+          revealedLetters.push(true);
+        } else {
+          span.className = "letter-box";
+          span.textContent = "";
+          revealedLetters.push(false);
+        }
+        hiddenPhraseEl.appendChild(span);
+      }
+    }
+
+    function renderPhrase() {
+      const phrase = currentRound.phrase.toUpperCase();
+      const boxes = hiddenPhraseEl.querySelectorAll(".letter-box");
+      for (let i = 0; i < phrase.length; i++) {
+        const ch = phrase[i];
+        const box = boxes[i];
+        if (ch === " ") continue;
+        if (revealedLetters[i]) {
+          box.textContent = ch;
+          box.classList.add("revealed");
+        } else {
+          box.textContent = "";
+          box.classList.remove("revealed");
+        }
+      }
+    }
+
+    function renderScore() {
+      scoreEl.textContent = score;
+    }
+
+    function renderUsedLetters() {
+      if (usedLetters.length === 0) {
+        usedListEl.textContent = "-";
+      } else {
+        usedListEl.textContent = usedLetters.join(", ");
+      }
+    }
+
+    function setMessage(msg) {
+      messageEl.textContent = msg;
+    }
+
+    function initWheel() {
+      wheelEl.innerHTML = "";
+      const sliceAngle = 360 / wheelValues.length;
+      wheelValues.forEach((val, i) => {
+        const slice = document.createElement("div");
+        slice.className = "slice";
+        slice.style.transform = `rotate(${sliceAngle * i}deg) skewY(${90 - sliceAngle}deg)`;
+        slice.textContent = typeof val === "number" ? val + " pt" : val;
+        wheelEl.appendChild(slice);
+      });
+    }
+
+    function initGame() {
+      pickRandomRound();
+      topicTitleEl.textContent = "Argomento: " + currentRound.topic;
+      usedLetters = [];
+      score = 0;
+      currentSpinValue = null;
+      renderScore();
+      renderUsedLetters();
+      initPhrase();
+      renderPhrase();
+      initWheel();
+      setMessage("Gira la ruota per iniziare!");
+      spinBtn.disabled = false;
+      buyVowelBtn.disabled = false;
+    }
+
+    // ---------- LOGICA ----------
+    spinBtn.addEventListener("click", () => {
+      const extraRotation = 360 * 4 + Math.floor(Math.random() * 360);
+      currentRotation += extraRotation;
+      wheelEl.style.transform = `rotate(${currentRotation}deg)`;
+
+      spinBtn.disabled = true;
+      setMessage("La ruota gira...");
+      playSound(spinSound);
+
+      setTimeout(() => {
+        const idx = Math.floor(Math.random() * wheelValues.length);
+        const value = wheelValues[idx];
+        currentSpinValue = value;
+
+        if (typeof value === "number") {
+          const letter = prompt(
+            `Hai ottenuto ${value} punti per ogni occorrenza.\nInserisci UNA consonante:`
+          );
+          handleConsonantInput(letter);
+        } else if (value === "PERDI TUTTO") {
+          score = 0;
+          renderScore();
+          playSound(failSound);
+          setMessage("PERDI TUTTO! Il punteggio torna a zero.");
+        } else if (value === "PASSA") {
+          setMessage("PASSA! Perdi il turno, ma puoi girare di nuovo.");
+        }
+
+        spinBtn.disabled = false;
+      }, 4000);
+    });
+
+    function handleConsonantInput(input) {
+      if (!input) {
+        setMessage("Nessuna lettera inserita.");
+        return;
+      }
+      const letter = input.toUpperCase();
+
+      if (letter.length !== 1 || !letter.match(/[A-ZÀÈÉÌÒÙ]/)) {
+        setMessage("Inserisci una sola lettera valida.");
+        return;
+      }
+
+      if (vowels.includes(letter)) {
+        setMessage("Devi inserire una consonante, non una vocale.");
+        return;
+      }
+
+      if (usedLetters.includes(letter)) {
+        setMessage("Questa lettera è già stata usata.");
+        return;
+      }
+
+      usedLetters.push(letter);
+      renderUsedLetters();
+
+      const phrase = currentRound.phrase.toUpperCase();
+      let count = 0;
+      for (let i = 0; i < phrase.length; i++) {
+        if (phrase[i] === letter && !revealedLetters[i]) {
+          revealedLetters[i] = true;
+          count++;
+        }
+      }
+
+      renderPhrase();
+
+      if (count > 0 && typeof currentSpinValue === "number") {
+        const gained = currentSpinValue * count;
+        score += gained;
+        renderScore();
+        playSound(dingSound);
+        setMessage(
+          `La consonante "${letter}" appare ${count} volta/e. Guadagni ${gained} punti!`
+        );
+      } else {
+        playSound(failSound);
+        setMessage(`La consonante "${letter}" non è presente. Perdi il turno.`);
+      }
+
+      checkWin();
+    }
+
+    buyVowelBtn.addEventListener("click", () => {
+      const input = vowelInput.value;
+      vowelInput.value = "";
+      const letter = input.toUpperCase();
+
+      if (!letter) {
+        setMessage("Inserisci una vocale nel campo a destra.");
+        return;
+      }
+
+      if (!vowels.includes(letter)) {
+        setMessage("Puoi acquistare solo una vocale (A, E, I, O, U).");
+        return;
+      }
+
+      if (score < 200) {
+        setMessage("Non hai abbastanza punti per comprare una vocale (servono 200).");
+        return;
+      }
+
+      if (usedLetters.includes(letter)) {
+        setMessage("Questa lettera è già stata usata.");
+        return;
+      }
+
+      score -= 200;
+      renderScore();
+      usedLetters.push(letter);
+      renderUsedLetters();
+
+      const phrase = currentRound.phrase.toUpperCase();
+      let count = 0;
+      for (let i = 0; i < phrase.length; i++) {
+        if (phrase[i] === letter && !revealedLetters[i]) {
+          revealedLetters[i] = true;
+          count++;
+        }
+      }
+
+      renderPhrase();
+
+      if (count > 0) {
+        playSound(dingSound);
+        setMessage(
+          `La vocale "${letter}" appare ${count} volta/e. Hai pagato 200 punti.`
+        );
+      } else {
+        playSound(failSound);
+        setMessage(
+          `La vocale "${letter}" non è presente. Hai comunque pagato 200 punti.`
+        );
+      }
+
+      checkWin();
+    });
+
+    solveBtn.addEventListener("click", () => {
+      const attempt = solveInput.value.trim().toUpperCase();
+      solveInput.value = "";
+      if (!attempt) {
+        setMessage("Inserisci una frase da provare.");
+        return;
+      }
+
+      const correct = currentRound.phrase.toUpperCase();
+
+      if (attempt === correct) {
+        for (let i = 0; i < revealedLetters.length; i++) {
+          revealedLetters[i] = true;
+        }
+        renderPhrase();
+        playSound(dingSound);
+        setMessage("Bravo! Hai indovinato la frase! Manche vinta 🎉");
+        spinBtn.disabled = true;
+        buyVowelBtn.disabled = true;
+      } else {
+        playSound(failSound);
+        setMessage("Frase sbagliata! Perdi il turno, ma puoi continuare a giocare.");
+      }
+    });
+
+    function checkWin() {
+      if (revealedLetters.every(v => v)) {
+        playSound(dingSound);
+        setMessage("Hai rivelato tutte le lettere! Manche completata 🎉");
+        spinBtn.disabled = true;
+        buyVowelBtn.disabled = true;
+      }
+    }
+
+    // AVVIO
+    initGame();
+  </script>
+</body>
+</html>
