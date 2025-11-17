@@ -118,6 +118,24 @@
       box-shadow: 0 0 20px #000;
       background: radial-gradient(circle, #fff, #fee2e2 40%, #fecaca 70%);
     }
+    #wheelContainer {
+  width: 350px;
+  height: 350px;
+  position: relative;
+}
+
+#wheelSVG {
+  filter: drop-shadow(0 0 12px black);
+}
+
+.sliceText {
+  font-size: 20px;
+  font-family: Arial;
+  fill: black;
+  font-weight: bold;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
 
       .slice {
         position: absolute;
@@ -206,7 +224,13 @@
 
   <div class="right-panel">
     <div id="pointer"></div>
-    <div id="wheel"></div>
+    <div id="wheelContainer">
+  <svg id="wheelSVG" width="350" height="350" viewBox="0 0 350 350">
+    <g id="wheelGroup" transform="rotate(0 175 175)">
+    </g>
+  </svg>
+</div>
+
 
     <div class="small" style="margin-top:10px;color:#ffe;">
       Gira la ruota, scegli una consonante, compra vocali e risolvi la frase!
@@ -298,28 +322,53 @@ function renderUsedLetters() {
 ===================== */
 
 function initWheel() {
-  wheelEl.innerHTML = "";
-  const sliceAngle = 360 / wheelValues.length;
+  const wheelGroup = document.getElementById("wheelGroup");
+  wheelGroup.innerHTML = "";
 
-  wheelValues.forEach((val, i) => {
-    const slice = document.createElement("div");
-    slice.className = "slice";
+  const values = wheelValues;
+  const sliceAngle = 360 / values.length;
+  const radius = 160;
 
-    // ruota ogni spicchio nella giusta posizione
-    slice.style.transform = `rotate(${sliceAngle * i}deg)`;
+  values.forEach((val, i) => {
+    const startAngle = (sliceAngle * i) * Math.PI / 180;
+    const endAngle = (sliceAngle * (i + 1)) * Math.PI / 180;
 
-    // testo più grande e leggibile
-    const label = document.createElement("div");
-    label.style.transform = "rotate(90deg)";
-    label.style.fontSize = "22px";
-    label.style.fontWeight = "bold";
+    const x1 = 175 + radius * Math.cos(startAngle);
+    const y1 = 175 + radius * Math.sin(startAngle);
 
-    label.textContent = typeof val === "number" ? val + " pt" : val;
-    slice.appendChild(label);
+    const x2 = 175 + radius * Math.cos(endAngle);
+    const y2 = 175 + radius * Math.sin(endAngle);
 
-    wheelEl.appendChild(slice);
+    const largeArc = sliceAngle > 180 ? 1 : 0;
+
+    // colore alternato
+    const color = i % 2 === 0 ? "#FFE98A" : "#F99A9A";
+
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute(
+      "d",
+      `M175,175 L${x1},${y1} A${radius},${radius} 0 ${largeArc} 1 ${x2},${y2} Z`
+    );
+    path.setAttribute("fill", color);
+    path.setAttribute("stroke", "#ecc54c");
+    path.setAttribute("stroke-width", "2");
+    wheelGroup.appendChild(path);
+
+    // Testo centrato nello spicchio
+    const midAngle = (startAngle + endAngle) / 2;
+    const textX = 175 + (radius * 0.55) * Math.cos(midAngle);
+    const textY = 175 + (radius * 0.55) * Math.sin(midAngle);
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", textX);
+    text.setAttribute("y", textY);
+    text.setAttribute("class", "sliceText");
+    text.setAttribute("transform", `rotate(${(midAngle * 180 / Math.PI) + 90}, ${textX}, ${textY})`);
+    text.textContent = typeof val === "number" ? val + " pt" : val;
+    wheelGroup.appendChild(text);
   });
 }
+
 
 
 /* =====================
@@ -532,7 +581,10 @@ giveUpBtn.addEventListener("click", () => {
 spinBtn.addEventListener("click", () => {
   const extraRotation = 360 * 4 + Math.floor(Math.random() * 360);
   currentRotation += extraRotation;
-  wheelEl.style.transform = `rotate(${currentRotation}deg)`;
+  document.getElementById("wheelGroup").setAttribute(
+  "transform",
+  `rotate(${currentRotation} 175 175)`
+);
 
   spinBtn.disabled = true;
   setMessage("La ruota gira...");
@@ -591,4 +643,5 @@ initGame();
 </script>
 </body>
 </html>
+
 
