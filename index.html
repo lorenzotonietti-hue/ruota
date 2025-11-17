@@ -119,26 +119,25 @@
       background: radial-gradient(circle, #fff, #fee2e2 40%, #fecaca 70%);
     }
 
-    .slice {
-      position: absolute;
-      width: 50%;
-      height: 50%;
-      top: 50%;
-      left: 50%;
-      transform-origin: 0% 0%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-      color: #000;
-      padding: 4px;
-      rotate: 90deg;
-    }
+      .slice {
+        position: absolute;
+        width: 50%;
+        height: 50%;
+        top: 50%;
+        left: 50%;
+        transform-origin: 0% 0%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        text-align: center;
+        color: #000;
+        padding: 0;
+      }
+      
+      .slice:nth-child(odd) { background: #fef08a; }
+      .slice:nth-child(even) { background: #fca5a5; }
 
-    .slice:nth-child(odd) { background: #fef08a; }
-    .slice:nth-child(even) { background: #fca5a5; }
 
     #pointer {
       width: 0;
@@ -305,11 +304,23 @@ function initWheel() {
   wheelValues.forEach((val, i) => {
     const slice = document.createElement("div");
     slice.className = "slice";
-    slice.style.transform = `rotate(${sliceAngle * i}deg) skewY(${90 - sliceAngle}deg)`;
-    slice.textContent = typeof val === "number" ? val + " pt" : val;
+
+    // ruota ogni spicchio nella giusta posizione
+    slice.style.transform = `rotate(${sliceAngle * i}deg)`;
+
+    // testo più grande e leggibile
+    const label = document.createElement("div");
+    label.style.transform = "rotate(90deg)";
+    label.style.fontSize = "22px";
+    label.style.fontWeight = "bold";
+
+    label.textContent = typeof val === "number" ? val + " pt" : val;
+    slice.appendChild(label);
+
     wheelEl.appendChild(slice);
   });
 }
+
 
 /* =====================
   CREAZIONE FRASE
@@ -580,3 +591,4 @@ initGame();
 </script>
 </body>
 </html>
+
