@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>La Ruota della Fortuna - Deluxe Edition</title>
+  <title>La Ruota della Fortuna</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #6ea1ff, #b389ff);
+      background: linear-gradient(135deg,#6ea1ff,#b389ff);
       margin: 0;
       padding: 20px;
       display: flex;
@@ -42,10 +42,10 @@
     }
 
     .left-panel, .right-panel {
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0,0,0,0.35);
       padding: 20px;
       border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
       min-width: 320px;
       color: #fff;
       backdrop-filter: blur(5px);
@@ -77,8 +77,15 @@
       font-weight: bold;
     }
 
-    .letter-box.space { border-bottom: none; width: 16px; }
-    .letter-box.revealed { animation: pop 0.25s ease-out; color: #fff; }
+    .letter-box.space {
+      border-bottom: none;
+      width: 16px;
+    }
+
+    .letter-box.revealed {
+      animation: pop 0.25s ease-out;
+      color: #fff;
+    }
 
     @keyframes pop {
       0% { transform: scale(0.5); opacity: 0; }
@@ -105,58 +112,18 @@
       font-weight: bold;
     }
 
+    /* RUOTA: usa la TUA immagine ruota.png */
     #wheel {
       width: 300px;
       height: 300px;
       border-radius: 50%;
       border: 8px solid #ffe772;
-      position: relative;
-      overflow: hidden;
-      transform: rotate(0deg);
-      transition: transform 4s cubic-bezier(.17, .67, .12, 1.27);
-      margin-bottom: 12px;
       box-shadow: 0 0 20px #000;
-      background: radial-gradient(circle, #fff, #fee2e2 40%, #fecaca 70%);
+      margin-bottom: 12px;
+      background: url("ruota.png") center/cover no-repeat;
+      transform: rotate(0deg);
+      transition: transform 4s cubic-bezier(.17,.67,.12,1.27);
     }
-    #wheelContainer {
-  width: 350px;
-  height: 350px;
-  position: relative;
-}
-
-#wheelSVG {
-  filter: drop-shadow(0 0 12px black);
-}
-
-.sliceText {
-  font-size: 20px;
-  font-family: Arial;
-  fill: black;
-  font-weight: bold;
-  text-anchor: middle;
-  dominant-baseline: middle;
-}
-
-
-      .slice {
-        position: absolute;
-        width: 50%;
-        height: 50%;
-        top: 50%;
-        left: 50%;
-        transform-origin: 0% 0%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        text-align: center;
-        color: #000;
-        padding: 0;
-      }
-      
-      .slice:nth-child(odd) { background: #fef08a; }
-      .slice:nth-child(even) { background: #fca5a5; }
-
 
     #pointer {
       width: 0;
@@ -181,10 +148,18 @@
       transition: 0.2s;
     }
 
-    button:hover { background: #7dd3fc; transform: scale(1.05); }
-    button:disabled { background: #6b7280; cursor: not-allowed; transform: none; }
+    button:hover {
+      background: #7dd3fc;
+      transform: scale(1.05);
+    }
 
-    input[type=text] {
+    button:disabled {
+      background: #6b7280;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    input[type="text"] {
       padding: 6px;
       border-radius: 6px;
       border: none;
@@ -194,469 +169,350 @@
 </head>
 
 <body>
+  <h1>La Ruota della Fortuna</h1>
+  <div id="topicTitle"></div>
 
-<h1>La Ruota della Fortuna</h1>
-<div id="topicTitle"></div>
+  <!-- suoni opzionali -->
+  <audio id="spinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_147b34d30d.mp3?filename=wheel-spin-102938.mp3"></audio>
+  <audio id="dingSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b56a0d5a5.mp3?filename=ding-36029.mp3"></audio>
+  <audio id="failSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_f3abc3f435.mp3?filename=error-126627.mp3"></audio>
 
-<audio id="spinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_147b34d30d.mp3?filename=wheel-spin-102938.mp3"></audio>
-<audio id="dingSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b56a0d5a5.mp3?filename=ding-36029.mp3"></audio>
-<audio id="failSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_f3abc3f435.mp3?filename=error-126627.mp3"></audio>
+  <div class="game-container">
+    <div class="left-panel">
+      <div id="scoreBox">Punteggio: <span id="score">0</span> punti</div>
+      <div id="usedLetters">Lettere usate: <span id="usedList">-</span></div>
 
-<div class="game-container">
+      <div id="hiddenPhrase"></div>
 
-  <div class="left-panel">
-    <div id="scoreBox">Punteggio: <span id="score">0</span> punti</div>
-    <div id="usedLetters">Lettere usate: <span id="usedList">-</span></div>
+      <button id="spinBtn">🎡 Gira la ruota</button>
+      <button id="buyVowelBtn">🅰 Compra vocale (-200)</button>
+      <input type="text" id="vowelInput" maxlength="1" placeholder="Vocale" />
 
-    <div id="hiddenPhrase"></div>
+      <div style="margin-top:10px;">
+        <input type="text" id="solveInput" placeholder="Prova a risolvere la frase" size="35" />
+        <button id="solveBtn">✔ Risolvi</button>
+        <button id="giveUpBtn" style="background:#ff7878;color:#000;font-weight:bold;">Arrenditi</button>
+      </div>
 
-    <button id="spinBtn">🎡 Gira la ruota</button>
-    <button id="buyVowelBtn">🅰 Compra vocale (-200)</button>
-    <input type="text" id="vowelInput" maxlength="1" placeholder="Vocale" />
-
-    <div style="margin-top:10px;">
-      <input type="text" id="solveInput" placeholder="Prova a risolvere la frase" size="35" />
-      <button id="solveBtn">✔ Risolvi</button>
-      <button id="giveUpBtn" style="background:#ff7878;color:#000;font-weight:bold;">Arrenditi</button>
+      <div id="message"></div>
     </div>
 
-    <div id="message"></div>
-  </div>
-
-  <div class="right-panel">
-    <div id="pointer"></div>
-    <div id="wheelContainer">
-  <svg id="wheelSVG" width="350" height="350" viewBox="0 0 350 350">
-    
-    <!-- spicchi che ruotano -->
-    <g id="wheelSlices" transform="rotate(0 175 175)"></g>
-
-    <!-- testo che NON ruota -->
-    <g id="wheelLabels"></g>
-
-  </svg>
-</div>
-
-
-
-    <div class="small" style="margin-top:10px;color:#ffe;">
-      Gira la ruota, scegli una consonante, compra vocali e risolvi la frase!
+    <div class="right-panel">
+      <div id="pointer"></div>
+      <div id="wheel"></div>
+      <div class="small" style="margin-top:10px; color:#ffe;">
+        Gira la ruota, scegli una consonante, compra vocali e prova a risolvere la frase!
+      </div>
     </div>
   </div>
 
-</div>
+  <script>
+    // ---------------- DATI ----------------
+    const rounds = [
+      { topic: "Informatica", phrase: "IL DATABASE MEMORIZZA I DATI" },
+      { topic: "Programmazione", phrase: "UN ALGORITMO RISOLVE UN PROBLEMA" },
+      { topic: "Reti", phrase: "INTERNET COLLEGA MILIONI DI COMPUTER" },
+      { topic: "Sicurezza", phrase: "LA PASSWORD NON VA CONDIVISA" },
+      { topic: "Economia Aziendale", phrase: "IL BILANCIO DI ESERCIZIO MOSTRA LA SITUAZIONE" },
+      { topic: "Informatica Aziendale", phrase: "IL GESTIONALE ORGANIZZA I PROCESSI AZIENDALI" },
+      { topic: "SIA", phrase: "IL SISTEMA INFORMATIVO SUPPORTA LE DECISIONI" },
+      { topic: "Diritto", phrase: "LA COSTITUZIONE TUTELA I DIRITTI FONDAMENTALI" },
+      { topic: "TCP IP", phrase: "IL PROTOCOLLO TCP GARANTISCE LA CONSEGNA DEI PACCHETTI" },
+      { topic: "HTML CSS", phrase: "IL LINGUAGGIO HTML DEFINISCE LA STRUTTURA DELLA PAGINA" }
+    ];
 
-<script>
-/* =====================
-     DATI DEL GIOCO
-===================== */
+    const wheelValues = [100, 150, 200, 250, 300, 400, 500, "PERDI TUTTO", "PASSA"];
+    const vowels = ["A", "E", "I", "O", "U"];
 
-const rounds = [
-  { topic:"Informatica", phrase:"IL DATABASE MEMORIZZA I DATI" },
-  { topic:"Programmazione", phrase:"UN ALGORITMO RISOLVE UN PROBLEMA" },
-  { topic:"Reti", phrase:"INTERNET COLLEGA MILIONI DI COMPUTER" },
-  { topic:"Sicurezza", phrase:"LA PASSWORD NON VA CONDIVISA" },
-  { topic:"Economia Aziendale", phrase:"IL BILANCIO DI ESERCIZIO MOSTRA LA SITUAZIONE" },
-  { topic:"Informatica Aziendale", phrase:"IL GESTIONALE ORGANIZZA I PROCESSI AZIENDALI" },
-  { topic:"SIA", phrase:"IL SISTEMA INFORMATIVO SUPPORTA LE DECISIONI" },
-  { topic:"Diritto", phrase:"LA COSTITUZIONE TUTELA I DIRITTI FONDAMENTALI" },
-  { topic:"TCP IP", phrase:"IL PROTOCOLLO TCP GARANTISCE LA CONSEGNA DEI PACCHETTI" },
-  { topic:"HTML CSS", phrase:"IL LINGUAGGIO HTML DEFINISCE LA STRUTTURA DELLA PAGINA" }
-];
+    // ------------- STATO -------------
+    let currentRound;
+    let revealedLetters = [];
+    let usedLetters = [];
+    let score = 0;
+    let currentRotation = 0;
+    let currentSpinValue = null;
 
-const wheelValues = [100,150,200,250,300,400,500,"PERDI TUTTO","PASSA"];
-const vowels = ["A","E","I","O","U"];
+    // ------------- DOM -------------
+    const topicTitleEl = document.getElementById("topicTitle");
+    const hiddenPhraseEl = document.getElementById("hiddenPhrase");
+    const scoreEl = document.getElementById("score");
+    const usedListEl = document.getElementById("usedList");
+    const messageEl = document.getElementById("message");
 
-/* =====================
-       VARIABILI
-===================== */
+    const wheelEl = document.getElementById("wheel");
+    const spinBtn = document.getElementById("spinBtn");
+    const buyVowelBtn = document.getElementById("buyVowelBtn");
 
-let currentRound;
-let revealedLetters = [];
-let usedLetters = [];
-let score = 0;
-let currentRotation = 0;
-let currentSpinValue = null;
+    const vowelInput = document.getElementById("vowelInput");
+    const solveInput = document.getElementById("solveInput");
+    const solveBtn = document.getElementById("solveBtn");
+    const giveUpBtn = document.getElementById("giveUpBtn");
 
-/* =====================
-       ELEMENTI DOM
-===================== */
+    const spinSound = document.getElementById("spinSound");
+    const dingSound = document.getElementById("dingSound");
+    const failSound = document.getElementById("failSound");
 
-const topicTitleEl = document.getElementById("topicTitle");
-const hiddenPhraseEl = document.getElementById("hiddenPhrase");
-const scoreEl = document.getElementById("score");
-const usedListEl = document.getElementById("usedList");
-const messageEl = document.getElementById("message");
-
-const wheelEl = document.getElementById("wheel");
-
-const spinBtn = document.getElementById("spinBtn");
-const buyVowelBtn = document.getElementById("buyVowelBtn");
-
-const vowelInput = document.getElementById("vowelInput");
-const solveInput = document.getElementById("solveInput");
-const solveBtn = document.getElementById("solveBtn");
-const giveUpBtn = document.getElementById("giveUpBtn");
-
-const spinSound = document.getElementById("spinSound");
-const dingSound = document.getElementById("dingSound");
-const failSound = document.getElementById("failSound");
-
-/* =====================
-     FUNZIONI UTILI
-===================== */
-
-function playSound(audio) {
-  if (!audio) return;
-  audio.currentTime = 0;
-  audio.play().catch(() => {});
-}
-
-function setMessage(msg) {
-  messageEl.textContent = msg;
-}
-
-function renderScore() {
-  scoreEl.textContent = score;
-}
-
-function renderUsedLetters() {
-  usedListEl.textContent = usedLetters.length === 0 ? "-" : usedLetters.join(", ");
-}
-
-/* =====================
-   CREAZIONE RUOTA
-===================== */
-
-function initWheel() {
-  const slicesGroup = document.getElementById("wheelSlices");
-  const labelsGroup = document.getElementById("wheelLabels");
-
-  slicesGroup.innerHTML = "";
-  labelsGroup.innerHTML = "";
-
-  const values = wheelValues;
-  const sliceAngle = 360 / values.length;
-  const radius = 160;
-
-  values.forEach((val, i) => {
-    const startAngle = (sliceAngle * i) * Math.PI / 180;
-    const endAngle = (sliceAngle * (i + 1)) * Math.PI / 180;
-
-    const x1 = 175 + radius * Math.cos(startAngle);
-    const y1 = 175 + radius * Math.sin(startAngle);
-    const x2 = 175 + radius * Math.cos(endAngle);
-    const y2 = 175 + radius * Math.sin(endAngle);
-
-    const largeArc = sliceAngle > 180 ? 1 : 0;
-
-    // colori alternati
-    const color = i % 2 === 0 ? "#FFE98A" : "#F99A9A";
-
-    // 🌈 spicchio (ruota!)
-    const slice = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    slice.setAttribute(
-      "d",
-      `M175,175 L${x1},${y1} A${radius},${radius} 0 ${largeArc} 1 ${x2},${y2} Z`
-    );
-    slice.setAttribute("fill", color);
-    slice.setAttribute("stroke", "#e2c373");
-    slice.setAttribute("stroke-width", "2");
-
-    slicesGroup.appendChild(slice);
-
-    // posizione testo
-    const midAngle = (startAngle + endAngle) / 2;
-    const labelX = 175 + (radius * 0.55) * Math.cos(midAngle);
-    const labelY = 175 + (radius * 0.55) * Math.sin(midAngle);
-
-    // ✨ testo che NON ruota
-    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    label.setAttribute("x", labelX);
-    label.setAttribute("y", labelY);
-    label.setAttribute("class", "sliceText");
-    label.textContent = typeof val === "number" ? val + " pt" : val;
-
-    labelsGroup.appendChild(label);
-  });
-}
-
-
-
-
-/* =====================
-  CREAZIONE FRASE
-===================== */
-
-function pickRandomRound() {
-  currentRound = rounds[Math.floor(Math.random() * rounds.length)];
-}
-
-function initPhrase() {
-  hiddenPhraseEl.innerHTML = "";
-  const phrase = currentRound.phrase.toUpperCase();
-  revealedLetters = [];
-
-  for (let ch of phrase) {
-    const box = document.createElement("span");
-
-    if (ch === " ") {
-      box.className = "letter-box space";
-      box.textContent = " ";
-      revealedLetters.push(true);
-    } else {
-      box.className = "letter-box";
-      box.textContent = "";
-      revealedLetters.push(false);
+    // ------------- FUNZIONI UTILI -------------
+    function playSound(audio) {
+      if (!audio) return;
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
     }
 
-    hiddenPhraseEl.appendChild(box);
-  }
-}
-
-function renderPhrase() {
-  const boxes = hiddenPhraseEl.querySelectorAll(".letter-box");
-  const phrase = currentRound.phrase.toUpperCase();
-
-  for (let i = 0; i < phrase.length; i++) {
-    if (phrase[i] !== " " && revealedLetters[i]) {
-      boxes[i].textContent = phrase[i];
-      boxes[i].classList.add("revealed");
-    }
-  }
-}
-
-/* =====================
-       VITTORIA
-===================== */
-
-function checkWin() {
-  if (revealedLetters.every(v => v)) {
-    playSound(dingSound);
-    setMessage("Hai rivelato tutte le lettere! Manche completata 🎉");
-    spinBtn.disabled = true;
-    buyVowelBtn.disabled = true;
-  }
-}
-
-/* =====================
-   LOGICA CONSONANTI
-===================== */
-
-function handleConsonantInput(input) {
-  if (!input) {
-    setMessage("Nessuna lettera inserita.");
-    return;
-  }
-
-  const letter = input.toUpperCase();
-
-  if (letter.length !== 1 || !letter.match(/[A-Z]/)) {
-    setMessage("Inserisci una sola lettera valida.");
-    return;
-  }
-
-  if (vowels.includes(letter)) {
-    setMessage("Devi inserire una consonante, non una vocale.");
-    return;
-  }
-
-  if (usedLetters.includes(letter)) {
-    setMessage("Questa lettera è già stata usata.");
-    return;
-  }
-
-  usedLetters.push(letter);
-  renderUsedLetters();
-
-  const phrase = currentRound.phrase.toUpperCase();
-  let count = 0;
-
-  for (let i = 0; i < phrase.length; i++) {
-    if (phrase[i] === letter && !revealedLetters[i]) {
-      revealedLetters[i] = true;
-      count++;
-    }
-  }
-
-  renderPhrase();
-
-  if (count > 0 && typeof currentSpinValue === "number") {
-    const gained = currentSpinValue * count;
-    score += gained;
-    renderScore();
-    playSound(dingSound);
-    setMessage(`La consonante "${letter}" appare ${count} volta/e. Guadagni ${gained} punti!`);
-  } else {
-    playSound(failSound);
-    setMessage(`La consonante "${letter}" non è presente. Perdi il turno.`);
-  }
-
-  checkWin();
-}
-
-/* =====================
-     COMPRA VOCALE
-===================== */
-
-buyVowelBtn.addEventListener("click", () => {
-  const input = vowelInput.value.toUpperCase();
-  vowelInput.value = "";
-
-  if (!vowels.includes(input)) {
-    setMessage("Inserisci una vocale valida (A, E, I, O, U).");
-    return;
-  }
-
-  if (usedLetters.includes(input)) {
-    setMessage("Questa vocale è già stata usata.");
-    return;
-  }
-
-  if (score < 200) {
-    setMessage("Non hai abbastanza punti (servono 200).");
-    return;
-  }
-
-  score -= 200;
-  renderScore();
-  usedLetters.push(input);
-  renderUsedLetters();
-
-  const phrase = currentRound.phrase.toUpperCase();
-  let found = 0;
-
-  for (let i = 0; i < phrase.length; i++) {
-    if (phrase[i] === input) {
-      revealedLetters[i] = true;
-      found++;
-    }
-  }
-
-  renderPhrase();
-
-  if (found > 0) {
-    playSound(dingSound);
-    setMessage(`La vocale "${input}" appare ${found} volta/e.`);
-  } else {
-    playSound(failSound);
-    setMessage(`La vocale "${input}" non è presente.`);
-  }
-
-  checkWin();
-});
-
-/* =====================
-  RISOLUZIONE FRASE
-===================== */
-
-solveBtn.addEventListener("click", () => {
-  const attempt = solveInput.value.trim().toUpperCase();
-  solveInput.value = "";
-
-  if (!attempt) {
-    setMessage("Inserisci una frase.");
-    return;
-  }
-
-  const correct = currentRound.phrase.toUpperCase();
-
-  if (attempt === correct) {
-    revealedLetters = revealedLetters.map(() => true);
-    renderPhrase();
-    playSound(dingSound);
-    setMessage("Bravo! Hai indovinato la frase! 🎉");
-    spinBtn.disabled = true;
-    buyVowelBtn.disabled = true;
-  } else {
-    playSound(failSound);
-    setMessage("Frase sbagliata! Perdi il turno.");
-  }
-});
-
-/* =====================
-      ARRENDITI
-===================== */
-
-giveUpBtn.addEventListener("click", () => {
-  revealedLetters = revealedLetters.map(() => true);
-  renderPhrase();
-  playSound(failSound);
-  setMessage("Ti sei arreso! La frase è stata rivelata.");
-  spinBtn.disabled = true;
-  buyVowelBtn.disabled = true;
-});
-
-/* =====================
-       RUOTA
-===================== */
-
-spinBtn.addEventListener("click", () => {
-  const extraRotation = 360 * 4 + Math.floor(Math.random() * 360);
-  currentRotation += extraRotation;
-  document
-  .getElementById("wheelSlices")
-  .setAttribute("transform", `rotate(${currentRotation} 175 175)`);
-
-
-  spinBtn.disabled = true;
-  setMessage("La ruota gira...");
-  playSound(spinSound);
-
-  setTimeout(() => {
-    const idx = Math.floor(Math.random() * wheelValues.length);
-    const value = wheelValues[idx];
-    currentSpinValue = value;
-
-    if (typeof value === "number") {
-      const input = prompt(`Hai ottenuto ${value} punti per occorrenza.\nInserisci UNA consonante:`);
-      handleConsonantInput(input);
+    function setMessage(msg) {
+      messageEl.textContent = msg;
     }
 
-    else if (value === "PERDI TUTTO") {
-      score = 0;
+    function renderScore() {
+      scoreEl.textContent = score;
+    }
+
+    function renderUsedLetters() {
+      usedListEl.textContent = usedLetters.length === 0 ? "-" : usedLetters.join(", ");
+    }
+
+    // ------------- FRASE -------------
+    function pickRandomRound() {
+      currentRound = rounds[Math.floor(Math.random() * rounds.length)];
+    }
+
+    function initPhrase() {
+      hiddenPhraseEl.innerHTML = "";
+      const phrase = currentRound.phrase.toUpperCase();
+      revealedLetters = [];
+
+      for (let ch of phrase) {
+        const box = document.createElement("span");
+
+        if (ch === " ") {
+          box.className = "letter-box space";
+          box.textContent = " ";
+          revealedLetters.push(true);
+        } else {
+          box.className = "letter-box";
+          box.textContent = "";
+          revealedLetters.push(false);
+        }
+
+        hiddenPhraseEl.appendChild(box);
+      }
+    }
+
+    function renderPhrase() {
+      const phrase = currentRound.phrase.toUpperCase();
+      const boxes = hiddenPhraseEl.querySelectorAll(".letter-box");
+
+      for (let i = 0; i < phrase.length; i++) {
+        if (phrase[i] === " ") continue;
+        if (revealedLetters[i]) {
+          boxes[i].textContent = phrase[i];
+          boxes[i].classList.add("revealed");
+        } else {
+          boxes[i].textContent = "";
+          boxes[i].classList.remove("revealed");
+        }
+      }
+    }
+
+    function checkWin() {
+      if (revealedLetters.every(v => v)) {
+        playSound(dingSound);
+        setMessage("Hai rivelato tutte le lettere! Manche completata 🎉");
+        spinBtn.disabled = true;
+        buyVowelBtn.disabled = true;
+      }
+    }
+
+    // ------------- GESTIONE LETTERE -------------
+    function handleConsonantInput(input) {
+      if (!input) {
+        setMessage("Nessuna lettera inserita.");
+        return;
+      }
+
+      const letter = input.toUpperCase();
+
+      if (letter.length !== 1 || !letter.match(/[A-Z]/)) {
+        setMessage("Inserisci una sola lettera valida.");
+        return;
+      }
+
+      if (vowels.includes(letter)) {
+        setMessage("Devi inserire una consonante, non una vocale.");
+        return;
+      }
+
+      if (usedLetters.includes(letter)) {
+        setMessage("Questa lettera è già stata usata.");
+        return;
+      }
+
+      usedLetters.push(letter);
+      renderUsedLetters();
+
+      const phrase = currentRound.phrase.toUpperCase();
+      let count = 0;
+
+      for (let i = 0; i < phrase.length; i++) {
+        if (phrase[i] === letter && !revealedLetters[i]) {
+          revealedLetters[i] = true;
+          count++;
+        }
+      }
+
+      renderPhrase();
+
+      if (count > 0 && typeof currentSpinValue === "number") {
+        const gained = currentSpinValue * count;
+        score += gained;
+        renderScore();
+        playSound(dingSound);
+        setMessage(`La consonante "${letter}" appare ${count} volta/e. Guadagni ${gained} punti!`);
+      } else {
+        playSound(failSound);
+        setMessage(`La consonante "${letter}" non è presente. Perdi il turno.`);
+      }
+
+      checkWin();
+    }
+
+    // ------------- COMPRA VOCALE -------------
+    buyVowelBtn.addEventListener("click", () => {
+      const input = vowelInput.value.toUpperCase();
+      vowelInput.value = "";
+
+      if (!vowels.includes(input)) {
+        setMessage("Inserisci una vocale valida (A, E, I, O, U).");
+        return;
+      }
+
+      if (usedLetters.includes(input)) {
+        setMessage("Questa vocale è già stata usata.");
+        return;
+      }
+
+      if (score < 200) {
+        setMessage("Non hai abbastanza punti (servono 200).");
+        return;
+      }
+
+      score -= 200;
       renderScore();
+      usedLetters.push(input);
+      renderUsedLetters();
+
+      const phrase = currentRound.phrase.toUpperCase();
+      let found = 0;
+
+      for (let i = 0; i < phrase.length; i++) {
+        if (phrase[i] === input) {
+          revealedLetters[i] = true;
+          found++;
+        }
+      }
+
+      renderPhrase();
+
+      if (found > 0) {
+        playSound(dingSound);
+        setMessage(`La vocale "${input}" appare ${found} volta/e.`);
+      } else {
+        playSound(failSound);
+        setMessage(`La vocale "${input}" non è presente.`);
+      }
+
+      checkWin();
+    });
+
+    // ------------- RISOLVI FRASE -------------
+    solveBtn.addEventListener("click", () => {
+      const attempt = solveInput.value.trim().toUpperCase();
+      solveInput.value = "";
+
+      if (!attempt) {
+        setMessage("Inserisci una frase.");
+        return;
+      }
+
+      const correct = currentRound.phrase.toUpperCase();
+
+      if (attempt === correct) {
+        revealedLetters = revealedLetters.map(() => true);
+        renderPhrase();
+        playSound(dingSound);
+        setMessage("Bravo! Hai indovinato la frase! 🎉");
+        spinBtn.disabled = true;
+        buyVowelBtn.disabled = true;
+      } else {
+        playSound(failSound);
+        setMessage("Frase sbagliata! Perdi il turno.");
+      }
+    });
+
+    // ------------- ARRENDITI -------------
+    giveUpBtn.addEventListener("click", () => {
+      revealedLetters = revealedLetters.map(() => true);
+      renderPhrase();
       playSound(failSound);
-      setMessage("PERDI TUTTO! Punteggio azzerato.");
+      setMessage("Ti sei arreso! La frase è stata rivelata.");
+      spinBtn.disabled = true;
+      buyVowelBtn.disabled = true;
+    });
+
+    // ------------- RUOTA (SPIN) -------------
+    spinBtn.addEventListener("click", () => {
+      const extraRotation = 360 * 4 + Math.floor(Math.random() * 360);
+      currentRotation += extraRotation;
+      wheelEl.style.transform = `rotate(${currentRotation}deg)`;
+
+      spinBtn.disabled = true;
+      setMessage("La ruota gira...");
+      playSound(spinSound);
+
+      setTimeout(() => {
+        const idx = Math.floor(Math.random() * wheelValues.length);
+        const value = wheelValues[idx];
+        currentSpinValue = value;
+
+        if (typeof value === "number") {
+          const input = prompt(
+            `Hai ottenuto ${value} punti per occorrenza.\nInserisci UNA consonante:`
+          );
+          handleConsonantInput(input);
+        } else if (value === "PERDI TUTTO") {
+          score = 0;
+          renderScore();
+          playSound(failSound);
+          setMessage("PERDI TUTTO! Punteggio azzerato.");
+        } else if (value === "PASSA") {
+          playSound(failSound);
+          setMessage("PASSA! Perdi il turno.");
+        }
+
+        spinBtn.disabled = false;
+      }, 4000);
+    });
+
+    // ------------- INIZIO GIOCO -------------
+    function initGame() {
+      pickRandomRound();
+      topicTitleEl.textContent = "Argomento: " + currentRound.topic;
+
+      usedLetters = [];
+      revealedLetters = [];
+      score = 0;
+      currentSpinValue = null;
+
+      renderUsedLetters();
+      renderScore();
+      initPhrase();
+      renderPhrase();
+      setMessage("Gira la ruota per iniziare!");
+      spinBtn.disabled = false;
+      buyVowelBtn.disabled = false;
     }
 
-    else if (value === "PASSA") {
-      playSound(failSound);
-      setMessage("Passa il turno!");
-    }
-
-    spinBtn.disabled = false;
-
-  }, 4000);
-});
-
-/* =====================
-       INIZIALIZZA
-===================== */
-
-function initGame() {
-  pickRandomRound();
-  topicTitleEl.textContent = "Argomento: " + currentRound.topic;
-
-  usedLetters = [];
-  revealedLetters = [];
-  score = 0;
-  currentSpinValue = null;
-
-  renderUsedLetters();
-  renderScore();
-  initWheel();
-  initPhrase();
-  renderPhrase();
-  setMessage("Gira la ruota per iniziare!");
-}
-
-initGame();
-
-</script>
+    initGame();
+  </script>
 </body>
 </html>
-
-
-
-
