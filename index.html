@@ -137,6 +137,7 @@
   dominant-baseline: middle;
 }
 
+
       .slice {
         position: absolute;
         width: 50%;
@@ -344,6 +345,7 @@ function initWheel() {
     // colore alternato
     const color = i % 2 === 0 ? "#FFE98A" : "#F99A9A";
 
+    // Disegna lo spicchio
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute(
       "d",
@@ -354,20 +356,24 @@ function initWheel() {
     path.setAttribute("stroke-width", "2");
     wheelGroup.appendChild(path);
 
-    // Testo centrato nello spicchio
+    // Posizione testo al centro dello spicchio
     const midAngle = (startAngle + endAngle) / 2;
     const textX = 175 + (radius * 0.55) * Math.cos(midAngle);
     const textY = 175 + (radius * 0.55) * Math.sin(midAngle);
 
     const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
     text.setAttribute("x", textX);
     text.setAttribute("y", textY);
+    
+    // TESTO DRITTO!
     text.setAttribute("class", "sliceText");
-    text.setAttribute("transform", `rotate(${(midAngle * 180 / Math.PI) + 90}, ${textX}, ${textY})`);
+
     text.textContent = typeof val === "number" ? val + " pt" : val;
     wheelGroup.appendChild(text);
   });
 }
+
 
 
 
@@ -643,5 +649,6 @@ initGame();
 </script>
 </body>
 </html>
+
 
 
